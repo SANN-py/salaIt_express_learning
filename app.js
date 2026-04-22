@@ -35,6 +35,13 @@ app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/customers", customerRoute);
 app.use("/api/v1/payments", paymentRoute);
 
+//check live backend
+app.get("/api/v1/health", (req, res) => {
+  res.json({
+    message: "OK",
+  });
+});
+
 // listen to port
 app.listen(port, () => {
   console.log(`listen to port ${port}`);
