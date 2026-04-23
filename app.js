@@ -18,12 +18,7 @@ const fileUpload = require("express-fileupload");
 const path = require("path");
 app.use(express.json());
 app.use(fileUpload());
-app.use(
-  cors({
-    origin: "https://sala-it-express-learning-frontend.vercel.app",
-    credentials: true,
-  }),
-);
+app.use(cors());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // use route
 app.use("/api/v1/auth", authRoute);
