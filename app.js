@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(fileUpload());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://sala-it-express-learning-frontend.vercel.app/",
     credentials: true,
   }),
 );
