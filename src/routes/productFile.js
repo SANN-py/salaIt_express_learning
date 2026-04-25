@@ -5,31 +5,43 @@ const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const fs = require("fs");
 const { where } = require("sequelize");
+const { storage } = require("../storage/storage");
+const multer = require("multer");
+const upload = multer({ storage });
 
-router.post("/upload/:productId/", async (req, res) => {
+router.post("/upload/:productId/", upload.single("file"), async (req, res) => {
   try {
+    const file = req.file;
     const productId = req.params.productId;
     const product = await Product.findByPk(productId);
-    if (!req.files || !req.files.file) {
-      return res.status(400).json({
-        message: "no file uploaded",
-      });
-    }
-    const file = req.files.file;
+    // if (!req.files || !req.files.file) {
+    //   return res.status(400).json({
+    //     message: "no file uploaded",
+    //   });
+    // }
+    // const file = req.files.file;
     if (!product) {
       return res.status(404).json({
         message: `product id: ${productId} not found`,
       });
     }
-    const fileName = `${uuidv4()}${path.extname(file.name)}`;
-    const uploadPath = path.join(process.cwd(), "uploads/products", fileName);
-    await file.mv(uploadPath);
-    const domain = `${req.protocol}://${req.get("host")}`;
-    const imageUrl = `${domain}/uploads/products/${fileName}`;
+    if (!req.file) {
+      return res.status(400).json({
+        message: "No file uploaded",
+      });
+    }
+    // const fileName = `${uuidv4()}${path.extname(file.name)}`;
+    const fileName = `${uuidv4()}${path.extname(file.originalname)}`;
+    // const uploadPath = path.join(process.cwd(), "uploads/products", fileName);
+    // await file.mv(uploadPath);
+    // const domain = `${req.protocol}://${req.get("host")}`;
+    // const imageUrl = `${domain}/uploads/products/${fileName}`;
     const savedImage = await ProductImages.create({
       productId,
-      imageUrl,
+      // imageUrl,
+      imageUrl: file.path,
       fileName: file.name,
+      // fileName,
     });
     res.status(200).json({
       message: "upload image successfuly",
@@ -53,7 +65,7 @@ router.get("/download/:imageId/", async (req, res) => {
       });
     }
     const fileName = image.imageUrl.split("/").pop();
-    const filePath = path.join(process.cwd(), "uploads/products", fileName);
+    // const filePath = path.join(process.cwd(), "uploads/products", fileName);
     if (!fs.existsSync(filePath)) {
       return res.json({
         message: `file not found on server`,
