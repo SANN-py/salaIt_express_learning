@@ -113,7 +113,8 @@ router.get("/:productId", async (req, res) => {
 router.put("/:productId", async (req, res) => {
   try {
     const { productId } = req.params;
-    const { name, description, color, qty, categoryId, isActive } = req.body;
+    const { name, description, color, qty, categoryId, isActive, price } =
+      req.body;
     const product = await Product.findByPk(productId);
     if (!product) {
       return res.status(404).json({
@@ -127,6 +128,7 @@ router.put("/:productId", async (req, res) => {
       qty,
       categoryId,
       isActive,
+      price,
     });
 
     const products = await Product.findByPk(productId, {
