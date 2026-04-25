@@ -40,8 +40,8 @@ router.post("/upload/:productId/", upload.single("file"), async (req, res) => {
       productId,
       // imageUrl,
       imageUrl: file.path,
-      fileName: file.name,
-      // fileName,
+      // fileName: file.name,
+      fileName,
     });
     res.status(200).json({
       message: "upload image successfuly",
